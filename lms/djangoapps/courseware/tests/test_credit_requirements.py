@@ -3,6 +3,7 @@ Tests for credit requirement display on the progress page.
 """
 
 import datetime
+import ddt
 
 from mock import patch
 from pytz import UTC
@@ -20,6 +21,7 @@ from openedx.core.djangoapps.credit.models import CreditCourse
 
 
 @patch.dict(settings.FEATURES, {"ENABLE_CREDIT_ELIGIBILITY": True})
+@ddt.ddt
 class ProgressPageCreditRequirementsTest(ModuleStoreTestCase):
     """
     Tests for credit requirement display on the progress page.
@@ -132,6 +134,23 @@ class ProgressPageCreditRequirementsTest(ModuleStoreTestCase):
             "{}, you are no longer eligible for credit in this course.".format(self.USER_FULL_NAME)
         )
         self.assertContains(response, "Verification Failed")
+
+    @ddt.data('honor', 'audit', 'verified', 'credit')
+    def test_credit_requirements_non_credit_enrollment(self, enrollment_mode):
+        # Test the progress table is only displayed to the
+        # verified and credit students.
+        self.enrollment.mode = enrollment_mode
+        self.enrollment.save()  # pylint: disable=no-member
+
+        # Check the progress page display
+        response = self._get_progress_page()
+        if enrollment_mode in ['credit', 'verified']:
+            # Expect that the requirements are displayed
+            self.assertContains(response, "<section class=\"credit-eligibility\">")
+            self.assertContains(response, self.MIN_GRADE_REQ_DISPLAY)
+            self.assertContains(response, self.VERIFICATION_REQ_DISPLAY)
+        else:
+            self.assertNotContains(response, "<section class=\"credit-eligibility\">")
 
     def _get_progress_page(self):
         """Load the progress page for the course the user is enrolled in. """
