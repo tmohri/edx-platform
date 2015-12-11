@@ -448,6 +448,12 @@ MICROSITE_CONFIGURATION = {
         "ENABLE_SHOPPING_CART": True,
         "ENABLE_PAID_COURSE_REGISTRATION": True,
         "SESSION_COOKIE_DOMAIN": "test_microsite.localhost",
+
+        "urls": {
+            'ABOUT': 'testmicrosite/about',
+            'PRIVACY': 'testmicrosite/privacy',
+            'TOS_AND_HONOR': 'testmicrosite/tos-and-honor',
+        },
     },
     "microsite_with_logistration": {
         "domain_prefix": "logistration",
