@@ -16,6 +16,7 @@ from xmodule.modulestore.tests.factories import CourseFactory
 from student.tests.factories import UserFactory, CourseEnrollmentFactory
 from util.date_utils import get_time_display, DEFAULT_SHORT_DATE_FORMAT
 
+from course_modes.models import CourseMode
 from openedx.core.djangoapps.credit import api as credit_api
 from openedx.core.djangoapps.credit.models import CreditCourse
 
@@ -135,7 +136,7 @@ class ProgressPageCreditRequirementsTest(ModuleStoreTestCase):
         )
         self.assertContains(response, "Verification Failed")
 
-    @ddt.data('honor', 'audit', 'professional')
+    @ddt.data(CourseMode.HONOR, CourseMode.AUDIT, CourseMode.PROFESSIONAL)
     def test_credit_requirements_non_credit_enrollment(self, enrollment_mode):
         # Test the progress table is not displayed to the non credit students.
         self.enrollment.mode = enrollment_mode
@@ -145,7 +146,7 @@ class ProgressPageCreditRequirementsTest(ModuleStoreTestCase):
         response = self._get_progress_page()
         self.assertNotContains(response, "<section class=\"credit-eligibility\">")
 
-    @ddt.data('verified', 'credit')
+    @ddt.data(CourseMode.VERIFIED, CourseMode.CREDIT_MODE)
     def test_credit_requirements_credit_verified_enrollment(self, enrollment_mode):
         # Test the progress table is only displayed to the
         # verified and credit students.
