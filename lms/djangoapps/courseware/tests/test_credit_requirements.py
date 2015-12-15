@@ -135,8 +135,18 @@ class ProgressPageCreditRequirementsTest(ModuleStoreTestCase):
         )
         self.assertContains(response, "Verification Failed")
 
-    @ddt.data('honor', 'audit', 'verified', 'credit')
+    @ddt.data('honor', 'audit', 'professional')
     def test_credit_requirements_non_credit_enrollment(self, enrollment_mode):
+        # Test the progress table is not displayed to the non credit students.
+        self.enrollment.mode = enrollment_mode
+        self.enrollment.save()  # pylint: disable=no-member
+
+        # Check the progress page display
+        response = self._get_progress_page()
+        self.assertNotContains(response, "<section class=\"credit-eligibility\">")
+
+    @ddt.data('verified', 'credit')
+    def test_credit_requirements_credit_verified_enrollment(self, enrollment_mode):
         # Test the progress table is only displayed to the
         # verified and credit students.
         self.enrollment.mode = enrollment_mode
@@ -144,13 +154,10 @@ class ProgressPageCreditRequirementsTest(ModuleStoreTestCase):
 
         # Check the progress page display
         response = self._get_progress_page()
-        if enrollment_mode in ['credit', 'verified']:
-            # Expect that the requirements are displayed
-            self.assertContains(response, "<section class=\"credit-eligibility\">")
-            self.assertContains(response, self.MIN_GRADE_REQ_DISPLAY)
-            self.assertContains(response, self.VERIFICATION_REQ_DISPLAY)
-        else:
-            self.assertNotContains(response, "<section class=\"credit-eligibility\">")
+        # Expect that the requirements are displayed
+        self.assertContains(response, "<section class=\"credit-eligibility\">")
+        self.assertContains(response, self.MIN_GRADE_REQ_DISPLAY)
+        self.assertContains(response, self.VERIFICATION_REQ_DISPLAY)
 
     def _get_progress_page(self):
         """Load the progress page for the course the user is enrolled in. """
