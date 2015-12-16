@@ -6,11 +6,11 @@ function($, LoginFactory, AjaxHelpers, ViewUtils) {
 
         beforeEach(function() {
             loadFixtures('login.underscore');
-            LoginFactory("/home/");
+            new LoginFactory("/home/");
             submit_button = $('#submit');
         });
 
-        it('It will disable the submit button once its clicked', function() {
+        it('It will disable the submit button once it is clicked', function() {
             spyOn(ViewUtils, 'redirect').andCallFake(function(){});
             var requests = AjaxHelpers.requests(this);
             expect(submit_button).not.toHaveClass('is-disabled');
