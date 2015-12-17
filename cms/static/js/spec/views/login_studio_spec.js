@@ -6,25 +6,32 @@ function($, LoginFactory, AjaxHelpers, ViewUtils) {
 
         beforeEach(function() {
             loadFixtures('login.underscore');
-            new LoginFactory("/home/");
+            var login_factory = new LoginFactory("/home/");
             submit_button = $('#submit');
         });
 
         it('It will disable the submit button once it is clicked', function() {
             spyOn(ViewUtils, 'redirect').andCallFake(function(){});
+            var addClassSpy = spyOn($.fn, 'addClass').andReturn(submit_button);
+            spyOn($.fn, 'removeClass').andReturn(submit_button);
             var requests = AjaxHelpers.requests(this);
-            expect(submit_button).not.toHaveClass('is-disabled');
             submit_button.click();
+            expect($.fn.addClass).toHaveBeenCalledWith('is-disabled');
+            expect(addClassSpy.mostRecentCall.object.selector).toEqual('#submit');
             AjaxHelpers.respondWithJson(requests, {'success': true});
-            expect(submit_button).toHaveClass('is-disabled');
+            expect($.fn.removeClass).not.toHaveBeenCalled();
         });
 
         it('It will not disable the submit button if there are errors in ajax request', function() {
             var requests = AjaxHelpers.requests(this);
-            expect(submit_button).not.toHaveClass('is-disabled');
+            var addClassSpy = spyOn($.fn, 'addClass').andReturn(submit_button);
+            var removeClassSpy = spyOn($.fn, 'removeClass').andReturn(submit_button);
             submit_button.click();
+            expect($.fn.addClass).toHaveBeenCalledWith('is-disabled');
+            expect(addClassSpy.mostRecentCall.object.selector).toEqual('#submit');
             AjaxHelpers.respondWithError(requests, {});
-            expect(submit_button).not.toHaveClass('is-disabled');
+            expect($.fn.removeClass).toHaveBeenCalledWith('is-disabled');
+            expect(removeClassSpy.mostRecentCall.object.selector).toEqual('#submit');
         });
     });
 });
