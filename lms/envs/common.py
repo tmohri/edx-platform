@@ -369,6 +369,9 @@ FEATURES = {
 
     # Enable LTI Provider feature.
     'ENABLE_LTI_PROVIDER': False,
+
+    # Enable CDN for static, unlocked assets.
+    'ENABLE_STATIC_ASSET_CDN': False,
 }
 
 # Ignore static asset files on import which match this pattern
@@ -2651,3 +2654,7 @@ CCX_MAX_STUDENTS_ALLOWED = 200
 # financial assistance form
 FINANCIAL_ASSISTANCE_MIN_LENGTH = 800
 FINANCIAL_ASSISTANCE_MAX_LENGTH = 2500
+
+# Base URL for CDN-capable static assets.  This should only be used for
+# static assets which are unlocked.
+STATIC_ASSET_CDN_BASE_URL = ''
