@@ -32,6 +32,8 @@ class ProgressPageCreditRequirementsTest(ModuleStoreTestCase):
     PASSWORD = "test"
     USER_FULL_NAME = "Bob"
 
+    REQUIREMENT_HEADING = "Requirements for Course Credit"
+
     MIN_GRADE_REQ_DISPLAY = "Final Grade Credit Requirement"
     VERIFICATION_REQ_DISPLAY = "Midterm Exam Credit Requirement"
 
@@ -144,7 +146,7 @@ class ProgressPageCreditRequirementsTest(ModuleStoreTestCase):
 
         # Check the progress page display
         response = self._get_progress_page()
-        self.assertNotContains(response, "<section class=\"credit-eligibility\">")
+        self.assertNotContains(response, self.REQUIREMENT_HEADING)
 
     @ddt.data(CourseMode.VERIFIED, CourseMode.CREDIT_MODE)
     def test_credit_requirements_credit_verified_enrollment(self, enrollment_mode):
@@ -156,7 +158,6 @@ class ProgressPageCreditRequirementsTest(ModuleStoreTestCase):
         # Check the progress page display
         response = self._get_progress_page()
         # Expect that the requirements are displayed
-        self.assertContains(response, "<section class=\"credit-eligibility\">")
         self.assertContains(response, self.MIN_GRADE_REQ_DISPLAY)
         self.assertContains(response, self.VERIFICATION_REQ_DISPLAY)
 
