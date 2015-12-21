@@ -742,7 +742,7 @@ def _get_courses_context(request, course_enrollments, course_modes_by_course, co
             "course_key": unicode(course.course_id),
             "course_number": course.course_overview.number,
             "course_name": course.course_overview.display_name_with_default,
-            "course_image_url": course.course_overview.course_image_url,
+            "course_image_url": course.course_overview.image_urls['small'],
             "course_university_about_section": course.course_overview.display_org_with_default,
             "course_mode": course.mode,
             "has_course_ended": course.course_overview.has_ended(),
