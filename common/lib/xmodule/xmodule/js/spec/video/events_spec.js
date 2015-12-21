@@ -99,6 +99,7 @@
             });
 
             it('qualitychange', function () {
+
                 state.videoPlayer.onPlaybackQualityChange();
 
                 expect('qualitychange').not.toHaveBeenTriggeredOn('.video');
